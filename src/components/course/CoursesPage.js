@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import * as courseActions from '../../actions/courseActions';
 
 class CoursesPage extends Component {
   constructor(props, context) {
@@ -17,7 +18,7 @@ class CoursesPage extends Component {
     this.setState({ course: course });
   }
   onClickSave() {
-    alert(`Saving ${this.state.course.title}`);
+    this.props.dispatch(courseActions.createCourse(this.state.course));
   }
   render() {
     return (
