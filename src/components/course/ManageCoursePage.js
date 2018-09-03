@@ -10,7 +10,9 @@ class ManageCoursePage extends Component {
 
   render() {
     return (
-
+      <div>
+        <h1>Manage Course Page</h1>
+      </div>
     );
   }
 }
