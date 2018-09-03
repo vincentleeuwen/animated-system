@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as courseActions from '../../actions/courseActions';
 
 class ManageCoursePage extends Component {
   constructor(props, context) {
@@ -10,7 +11,7 @@ class ManageCoursePage extends Component {
   render() {
     return (
 
-    )
+    );
   }
 }
 
@@ -26,7 +27,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch)
+    actions: bindActionCreators(courseActions, dispatch)
   }
 }
 
