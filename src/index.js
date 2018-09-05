@@ -7,6 +7,7 @@ import configureStore from './store/configureStore';
 import routes from './routes';
 import './styles/styles.css'; // webpack can import css too!
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/toastr/build/toastr.min.css';
 
 import { loadCourses } from './actions/courseActions';
 import { loadAuthors } from './actions/authorActions';
