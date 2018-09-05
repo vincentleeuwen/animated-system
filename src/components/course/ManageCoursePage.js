@@ -10,7 +10,8 @@ class ManageCoursePage extends Component {
 
     this.state = {
       course: Object.assign({}, this.props.course),
-      errors: {}
+      errors: {},
+      saving: false
     };
 
     this.updateCourseState = this.updateCourseState.bind(this);
@@ -33,16 +34,18 @@ class ManageCoursePage extends Component {
 
   saveCourse(event) {
     event.preventDefault();
+    this.setState({ saving: true });
     this.props.actions.saveCourse(this.state.course)
       .then(() => this.redirect());
   }
 
   redirect() {
+    this.setState({ saving: false });
     this.context.router.push('/courses');
   }
 
   render() {
-    const { course, errors } = this.state;
+    const { course, errors, saving } = this.state;
     const { authors } = this.props;
     return (
       <CourseForm
@@ -51,6 +54,7 @@ class ManageCoursePage extends Component {
         allAuthors={authors}
         onChange={this.updateCourseState}
         onSave={this.saveCourse}
+        saving={saving}
       />
     );
   }
@@ -98,6 +102,7 @@ function mapStateToProps(state, ownProps) {
   return {
     course,
     authors: authorsFormattedForDropdown
+    // loading: state.ajaxCallsInProgress > 0
   };
 }
 
