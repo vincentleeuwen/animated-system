@@ -27,6 +27,8 @@ class CoursesPage extends Component {
           className="btn btn-primary"
           onClick={this.redirectToAddCoursePage}
         />
+        <br />
+        <br />
         <CourseList courses={courses} />
       </div>
     );
