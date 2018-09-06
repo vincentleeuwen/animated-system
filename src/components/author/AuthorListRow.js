@@ -7,7 +7,9 @@ const AuthorListRow = ({ author }) => {
       <td>
         <Link to={`/author/${author.id}`}>{author.firstName}</Link>
       </td>
-      <td>{author.lastName}</td>
+      <td>
+        <Link to={`/author/${author.id}`}>{author.lastName}</Link>
+      </td>
       <td>{author.id}</td>
     </tr>
   );
