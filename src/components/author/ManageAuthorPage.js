@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import toastr from 'toastr';
 
 import AuthorForm from './AuthorForm';
 import * as authorActions from '../../actions/authorActions';
@@ -18,12 +19,12 @@ class ManageAuthorPage extends Component {
     this.updateAuthorState = this.updateAuthorState.bind(this);
     this.saveAuthor = this.saveAuthor.bind(this);
   }
-  // componentWillReceiveProps(nextProps) {
-  //   if (this.props.author.id != nextProps.author.id) {
-  //     // Nessecary to populate form when existing course is loaded directly
-  //     this.setState({ author: Object.assign({}, nextProps.author)});
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.author.id != nextProps.author.id) {
+      // Nessecary to populate form when existing course is loaded directly
+      this.setState({ author: Object.assign({}, nextProps.author)});
+    }
+  }
   updateAuthorState(event) {
     const field = event.target.name;
     let author = Object.assign({}, this.state.author);
@@ -32,11 +33,18 @@ class ManageAuthorPage extends Component {
   }
   saveAuthor(event) {
     event.preventDefault();
+    this.setState({ saving: true });
     const { author } = this.state;
     this.props.actions.saveAuthor(Object.assign({}, author))
-      .then(() => this.redirect());
+      .then(() => this.redirect())
+      .catch(error => {
+        toastr.error(error);
+        this.setState({ saving: false });
+      });
   }
   redirect() {
+    this.setState({ saving: false });
+    toastr.success('Author saved!');
     browserHistory.push('/authors');
   }
   render() {
@@ -73,8 +81,8 @@ function mapStateToProps(state, ownProps) {
     lastName: ''
   };
 
-  if (authorId && state.authors > 0) {
-    author = getAuthorById(authorId);
+  if (authorId && state.authors.length > 0) {
+    author = getAuthorById(authorId, state.authors);
   }
 
   return {
