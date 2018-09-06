@@ -22,12 +22,12 @@ class ManageAuthorPage extends Component {
     this.saveAuthor = this.saveAuthor.bind(this);
     this.deleteAuthor = this.deleteAuthor.bind(this);
   }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.author.id != nextProps.author.id) {
-      // Nessecary to populate form when existing course is loaded directly
-      this.setState({ author: Object.assign({}, nextProps.author)});
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.author.id != nextProps.author.id) {
+  //     // Nessecary to populate form when existing course is loaded directly
+  //     this.setState({ author: Object.assign({}, nextProps.author)});
+  //   }
+  // }
   updateAuthorState(event) {
     const field = event.target.name;
     let author = Object.assign({}, this.state.author);
@@ -47,9 +47,22 @@ class ManageAuthorPage extends Component {
   }
   deleteAuthor(event) {
     event.preventDefault();
-    console.log('deleting author!!!!');
-    this.props.actions.deleteAuthor(this.state.author.id);
-    browserHistory.push('/authors');
+    this.setState({ deleting: true });
+    if (this.props.coursesByAuthor > 0) {
+      toastr.error('This author has courses listed');
+      this.setState({ deleting: false });
+    } else {
+      this.props.actions.deleteAuthor(this.state.author.id)
+        .then(() => {
+          this.setState({ deleting: false });
+          toastr.success('Author deleted!');
+          browserHistory.push('/authors');
+        })
+        .catch(error => {
+          toastr.error(error);
+          this.setState({ deleting: false });
+        });
+    }
   }
   redirect() {
     this.setState({ saving: false });
@@ -79,7 +92,8 @@ class ManageAuthorPage extends Component {
 
 ManageAuthorPage.propTypes = {
   author: PropTypes.object,
-  actions: PropTypes.array.isRequired
+  actions: PropTypes.array.isRequired,
+  coursesByAuthor: PropTypes.number.isRequired
 };
 
 function getAuthorById(authorId, authors) {
@@ -96,13 +110,16 @@ function mapStateToProps(state, ownProps) {
     firstName: '',
     lastName: ''
   };
+  let coursesByAuthor = 0;
 
   if (authorId && state.authors.length > 0) {
     author = getAuthorById(authorId, state.authors);
+    coursesByAuthor = state.courses.filter(course => course.authorId === authorId).length;
   }
 
   return {
-    author
+    author,
+    coursesByAuthor
   };
 }
 
