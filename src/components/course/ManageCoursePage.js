@@ -1,10 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import toastr from 'toastr';
+
 import { authorsFormattedForDropdown } from '../../selectors/selectors';
 import * as courseActions from '../../actions/courseActions';
 import CourseForm from './CourseForm';
-import toastr from 'toastr';
+import DeleteCourseForm from './DeleteCourseForm';
 
 export class ManageCoursePage extends Component {
   constructor(props, context) {
@@ -13,17 +15,21 @@ export class ManageCoursePage extends Component {
     this.state = {
       course: Object.assign({}, this.props.course),
       errors: {},
-      saving: false
+      saving: false,
+      deleting: false
     };
 
     this.updateCourseState = this.updateCourseState.bind(this);
     this.saveCourse = this.saveCourse.bind(this);
+    this.deleteCourse = this.deleteCourse.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.course.id != nextProps.course.id) {
-      // Nessecary to populate form when existing course is loaded directly
-      this.setState({ course: Object.assign({}, nextProps.course)});
+    if (this.props.course && nextProps.course) {
+      if (this.props.course.id != nextProps.course.id) {
+        // Nessecary to populate form when existing course is loaded directly
+        this.setState({ course: Object.assign({}, nextProps.course)});
+      }
     }
   }
 
@@ -60,6 +66,20 @@ export class ManageCoursePage extends Component {
         this.setState({ saving: false });
       });
   }
+  deleteCourse(event) {
+    event.preventDefault();
+    this.setState({ deleting: true });
+    this.props.actions.deleteCourse(this.state.course.id)
+      .then(() => {
+        toastr.success('Course deleted!');
+        this.setState({ deleting: false });
+        this.context.router.push('/courses');
+      })
+      .catch(error => {
+        toastr.error(error);
+        this.setState({ deleting: false });
+      });
+  }
 
   redirect() {
     this.setState({ saving: false });
@@ -68,17 +88,24 @@ export class ManageCoursePage extends Component {
   }
 
   render() {
-    const { course, errors, saving } = this.state;
+    const { course, errors, saving, deleting } = this.state;
     const { authors } = this.props;
     return (
-      <CourseForm
-        course={course}
-        errors={errors}
-        allAuthors={authors}
-        onChange={this.updateCourseState}
-        onSave={this.saveCourse}
-        saving={saving}
-      />
+      <div>
+        <CourseForm
+          course={course}
+          errors={errors}
+          allAuthors={authors}
+          onChange={this.updateCourseState}
+          onSave={this.saveCourse}
+          saving={saving}
+        />
+        <DeleteCourseForm
+          course={course}
+          onClick={this.deleteCourse}
+          deleting={deleting}
+        />
+      </div>
     );
   }
 }

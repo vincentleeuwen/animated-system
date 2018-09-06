@@ -48,7 +48,7 @@ export function deleteCourse(courseId) {
   return (dispatch, getState) => {
     dispatch(beginAjaxCall());
     return CourseApi.deleteCourse(courseId).then(() => {
-      dispatch(deleteCourseSuccess());
+      dispatch(deleteCourseSuccess(courseId));
     }).catch(error => {
       dispatch(ajaxCallError());
       throw error;
