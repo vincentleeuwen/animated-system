@@ -48,6 +48,8 @@ class ManageAuthorPage extends Component {
   deleteAuthor(event) {
     event.preventDefault();
     console.log('deleting author!!!!');
+    this.props.actions.deleteAuthor(this.state.author.id);
+    browserHistory.push('/authors');
   }
   redirect() {
     this.setState({ saving: false });
