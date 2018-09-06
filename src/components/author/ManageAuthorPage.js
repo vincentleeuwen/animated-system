@@ -12,7 +12,14 @@ class ManageAuthorPage extends Component {
     };
 
     this.updateAuthorState = this.updateAuthorState.bind(this);
+    this.saveAuthor = this.saveAuthor.bind(this);
   }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.author.id != nextProps.author.id) {
+  //     // Nessecary to populate form when existing course is loaded directly
+  //     this.setState({ author: Object.assign({}, nextProps.author)});
+  //   }
+  // }
   updateAuthorState(event) {
     const field = event.target.name;
     let author = Object.assign({}, this.state.author);
@@ -21,7 +28,7 @@ class ManageAuthorPage extends Component {
   }
   saveAuthor(event) {
     event.preventDefault();
-    this.context.router.push('/authors');
+    // this.context.router.push('/authors');
   }
   render() {
     const { saving, errors, author } = this.state;
@@ -31,6 +38,7 @@ class ManageAuthorPage extends Component {
         errors={errors}
         saving={saving}
         onChange={this.updateAuthorState}
+        onSave={this.saveAuthor}
       />
     );
   }
