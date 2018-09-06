@@ -5,6 +5,7 @@ import { browserHistory } from 'react-router';
 import toastr from 'toastr';
 
 import AuthorForm from './AuthorForm';
+import DeleteAuthorForm from './DeleteAuthorForm';
 import * as authorActions from '../../actions/authorActions';
 
 class ManageAuthorPage extends Component {
@@ -13,11 +14,13 @@ class ManageAuthorPage extends Component {
     this.state = {
       author: Object.assign({}, this.props.author),
       errors: {},
-      saving: false
+      saving: false,
+      deleting: false
     };
 
     this.updateAuthorState = this.updateAuthorState.bind(this);
     this.saveAuthor = this.saveAuthor.bind(this);
+    this.deleteAuthor = this.deleteAuthor.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.author.id != nextProps.author.id) {
@@ -42,21 +45,32 @@ class ManageAuthorPage extends Component {
         this.setState({ saving: false });
       });
   }
+  deleteAuthor(event) {
+    event.preventDefault();
+    console.log('deleting author!!!!');
+  }
   redirect() {
     this.setState({ saving: false });
     toastr.success('Author saved!');
     browserHistory.push('/authors');
   }
   render() {
-    const { saving, errors, author } = this.state;
+    const { saving, errors, author, deleting } = this.state;
     return (
-      <AuthorForm
+      <div>
+        <AuthorForm
         author={author}
         errors={errors}
         saving={saving}
         onChange={this.updateAuthorState}
         onSave={this.saveAuthor}
       />
+      <DeleteAuthorForm
+        author={author}
+        onClick={this.deleteAuthor}
+        deleting={deleting}
+      />
+      </div>
     );
   }
 }
