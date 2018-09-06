@@ -1,20 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import AuthorList from './AuthorList';
 
-class AuthorsPage extends Component {
+class AuthorPage extends Component {
   render() {
     const { authors } = this.props;
     console.log(authors);
     return (
       <div>
         <h1>Authors</h1>
-        <pre>{JSON.stringify(authors)}</pre>
+        <AuthorList authors={authors} />
       </div>
     );
   }
 }
 
-AuthorsPage.propTypes = {
+AuthorPage.propTypes = {
   authors: PropTypes.array.isRequired
 };
 
@@ -24,4 +25,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(AuthorsPage);
+export default connect(mapStateToProps)(AuthorPage);
