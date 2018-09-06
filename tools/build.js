@@ -2,6 +2,8 @@ import webpack from 'webpack';
 import webpackConfig from '../webpack.config.prod';
 import colors from 'colors';
 
+/* eslint-disable no-console */
+
 // this assures Babel dev config (hot reloading etc.) doesn't apply
 process.env.NODE_ENV = 'production';
 
