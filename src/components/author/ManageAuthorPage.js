@@ -22,12 +22,14 @@ class ManageAuthorPage extends Component {
     this.saveAuthor = this.saveAuthor.bind(this);
     this.deleteAuthor = this.deleteAuthor.bind(this);
   }
-  // componentWillReceiveProps(nextProps) {
-  //   if (this.props.author.id != nextProps.author.id) {
-  //     // Nessecary to populate form when existing course is loaded directly
-  //     this.setState({ author: Object.assign({}, nextProps.author)});
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.author && nextProps.author) {
+      if (this.props.author.id != nextProps.author.id) {
+        // Nessecary to populate form when existing course is loaded directly
+        this.setState({ author: Object.assign({}, nextProps.author)});
+      }
+    }
+  }
   updateAuthorState(event) {
     const field = event.target.name;
     let author = Object.assign({}, this.state.author);
