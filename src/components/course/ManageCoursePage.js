@@ -16,7 +16,8 @@ export class ManageCoursePage extends Component {
       course: Object.assign({}, this.props.course),
       errors: {},
       saving: false,
-      deleting: false
+      deleting: false,
+      unsaved: false
     };
 
     this.updateCourseState = this.updateCourseState.bind(this);
@@ -33,11 +34,18 @@ export class ManageCoursePage extends Component {
     }
   }
 
+  componentDidMount() {
+    this.context.router.setRouteLeaveHook(this.props.route, () => {
+      if (this.state.unsaved)
+        return 'You have unsaved changes. Are you sure you want to leave this page?';
+    });
+  }
+
   updateCourseState(event) {
     const field = event.target.name;
     let course = Object.assign({}, this.state.course);
     course[field] = event.target.value;
-    return this.setState({ course });
+    return this.setState({ unsaved: true, course });
   }
 
   courseFormIsValid() {
@@ -60,7 +68,9 @@ export class ManageCoursePage extends Component {
 
     this.setState({ saving: true });
     this.props.actions.saveCourse(this.state.course)
-      .then(() => this.redirect())
+      .then(() => {
+        this.setState({ unsaved: false, saving: false }, this.redirect);
+      })
       .catch(error => {
         toastr.error(error);
         this.setState({ saving: false });
